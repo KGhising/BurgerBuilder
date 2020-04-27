@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import Burger from '../../component/Burger/Burger';
 import BuildControls from '../../component/Burger/BuildControls/BuildControls';
 import classes from './BurgerBuilder.module.css';
+import Modal from '../../component/UI/Modal/Modal';
+import OrderSummary from '../../component/Burger/OrderSummary/OrderSummary';
 
 const INGREDIENT_PRICES = {
     salad: 1,
@@ -80,12 +82,17 @@ class BurgerBuidler extends Component{
             disabledInfo[key] = disabledInfo[key] <= 0
         }
         return (
-            <div className={classes.BurgerBuilder}>
-                <Burger ingredients={this.state.ingredients} />
-                <BuildControls ingredientAdded={this.addIngredientHandler} 
-                ingredientRemoved={this.removeIngredientHandler}
-                disabled={disabledInfo} price={this.state.totalPrice}
-                purchasable={this.state.purchasable} /> 
+            <div>
+                <Modal>
+                    <OrderSummary ingredients={this.state.ingredients} />
+                </Modal>
+                <div className={classes.BurgerBuilder}>
+                    <Burger ingredients={this.state.ingredients} />
+                    <BuildControls ingredientAdded={this.addIngredientHandler} 
+                    ingredientRemoved={this.removeIngredientHandler}
+                    disabled={disabledInfo} price={this.state.totalPrice}
+                    purchasable={this.state.purchasable} /> 
+            </div>
             </div>
         );
     }

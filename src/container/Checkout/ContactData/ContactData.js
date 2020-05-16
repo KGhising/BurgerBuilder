@@ -22,7 +22,8 @@ class ContactData extends Component {
                 validation: {
                     required: true
                 },
-                valid: false
+                valid: false,
+                touched: false
             }, 
             address: {
                 elementType: 'input', 
@@ -78,9 +79,10 @@ class ContactData extends Component {
         const order = {
             ingredients: this.props.ings,
             price: this.props.price,
-            orderDate: formData
+            orderDate: formData,
+            userId: this.props.userId
         }
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(order, this.props.token);
     }
 
     checkValidation(value, rules) {
@@ -161,13 +163,15 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
     };
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderDate) => dispatch(actions.purchaseBurger(orderDate))
+        onOrderBurger: (orderDate, token) => dispatch(actions.purchaseBurger(orderDate, token))
     };
 };
 

@@ -8,6 +8,7 @@ import Spinner from '../../../component/UI/Spinner/Spinner';
 import Input from '../../../component/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/WithErrorHandler';
 import * as actions from '../../../store/actions/index';
+import { updateObject, checkValidation } from '../../../shared/utility';
 
 class ContactData extends Component {
     state = {
@@ -85,35 +86,15 @@ class ContactData extends Component {
         this.props.onOrderBurger(order, this.props.token);
     }
 
-    checkValidation(value, rules) {
-        let isvalid = true;
-        if(!rules) {
-            return true;
-        }
-        
-        if(rules.required) {
-            isvalid = value.trim() !== ' ' && isvalid;
-        }
-        if (rules.minLength) {
-            isvalid = value.length >= rules.minLength && isvalid;
-        }
-        if (rules.maxLength) {
-            isvalid = value.length <= rules.maxLength && isvalid;
-        }
-        return isvalid;
-    }
-
     inputChangedHandler = (event, inputIdentifier) => {
-        const updatedOrderForm = {
-            ...this.state.orderForm
-        };
-        const updatedFormElement = {
-            ...updatedOrderForm[inputIdentifier]
-        };
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.touched = true;
-        updatedFormElement.valid = this.checkValidation(updatedFormElement.value, updatedFormElement.validation);
-        updatedOrderForm[inputIdentifier] = updatedFormElement;
+        const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+            value: event.target.value,
+            valid: checkValidation(event.target.value, this.state.orderForm[inputIdentifier].validation),
+            touched: true,
+        });
+        const updatedOrderForm = updateObject(this.state.orderForm, {   
+            [inputIdentifier]: updatedFormElement
+        });
 
         let formIsVaild = true;
         for(let inputIdentifier in updatedOrderForm) {
